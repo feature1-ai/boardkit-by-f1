@@ -6,12 +6,7 @@
     @dragleave="dropTarget = false"
     @drop.prevent="onDrop"
   >
-    <header class="lane-header">
-      <span v-if="lane.color" class="lane-color-dot" :style="{ background: lane.color }" />
-      <span class="lane-name">{{ lane.name }}</span>
-      <span class="lane-count">{{ cards.length }}</span>
-      <button class="lane-delete" :title="deleteTitle" @click="removeLane"><Icon name="trash" :size="14" /></button>
-    </header>
+    <LaneHeader :lane="lane" :count="cards.length" @delete="removeLane" />
 
     <div class="lane-cards">
       <CardTile
@@ -23,30 +18,28 @@
       />
     </div>
 
-    <form v-if="composing" class="composer" style="margin-top: 8px;" @submit.prevent="addCard">
-      <textarea ref="cardInput" v-model.trim="newTitle" rows="2" placeholder="Card title"
-        @keydown.enter.exact.prevent="addCard" @keydown.esc="composing = false" />
-      <div class="composer-actions">
-        <button type="submit" class="btn-primary">Add card</button>
-        <button type="button" class="btn-subtle" @click="composing = false"><Icon name="x" /></button>
-      </div>
-    </form>
-    <button v-else class="composer-trigger" @click="openComposer"><Icon name="plus" :size="14" /> Add a card</button>
+    <div v-if="composing" style="margin-top: 8px;">
+      <InlineComposer placeholder="Card title" button-label="Add card" multiline @submit="addCard" @cancel="composing = false" />
+    </div>
+    <button v-else class="composer-trigger" @click="composing = true"><Icon name="plus" :size="14" /> Add a card</button>
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from 'vue';
-import { CURRENT_USER, engine, version } from '../store.js';
-import Icon from './Icon.vue';
-import CardTile from './CardTile.vue';
+// Lane column: header, ordered card tiles, add-card composer, and the
+// drag-and-drop target logic (drop on lane = append; drop on card = insert
+// before it — see CardTile).
+import { computed, ref } from 'vue';
+import { CURRENT_USER, engine, version } from '../../store.js';
+import Icon from '../shared/Icon.vue';
+import InlineComposer from '../shared/InlineComposer.vue';
+import LaneHeader from './LaneHeader.vue';
+import CardTile from '../card/CardTile.vue';
 
 const props = defineProps<{ laneId: string; boardId: string }>();
 const emit = defineEmits<{ (e: 'open-card', cardId: string): void }>();
 
 const composing = ref(false);
-const newTitle = ref('');
-const cardInput = ref<HTMLTextAreaElement | null>(null);
 const dropTarget = ref(false);
 
 const lane = computed(() => {
@@ -59,21 +52,8 @@ const cards = computed(() => {
   return engine.listCards(props.laneId);
 });
 
-const deleteTitle = computed(() =>
-  cards.value.length ? 'Delete lane (cards move to the first other lane)' : 'Delete lane');
-
-async function openComposer() {
-  composing.value = true;
-  await nextTick();
-  cardInput.value?.focus();
-}
-
-async function addCard() {
-  if (!newTitle.value) return;
-  await engine.createCard(props.laneId, { title: newTitle.value, createdBy: CURRENT_USER });
-  newTitle.value = '';
-  await nextTick();
-  cardInput.value?.focus();
+async function addCard(title: string) {
+  await engine.createCard(props.laneId, { title, createdBy: CURRENT_USER });
 }
 
 async function removeLane() {
@@ -90,14 +70,12 @@ async function removeLane() {
   }
 }
 
-/** Drop on the lane background: append to the end. */
 async function onDrop(event: DragEvent) {
   dropTarget.value = false;
   const cardId = event.dataTransfer?.getData('text/boardkit-card');
   if (cardId) await moveHere(cardId, cards.value.length);
 }
 
-/** Drop on a card: insert at that card's index. */
 async function dropAt(cardId: string, index: number) {
   dropTarget.value = false;
   await moveHere(cardId, index);

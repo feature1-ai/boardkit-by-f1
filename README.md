@@ -116,6 +116,7 @@ DATABASE_URL=postgres://… npm run dev   # → state in Postgres (boardkit_stat
 ```
 
 - Endpoints mirror the engine API: boards, members, lanes, cards, moves, links, checklists — plus `GET /state` (full snapshot) and `GET /events` (every engine event over SSE, so clients stay live).
+- **Layered per resource** (`boards`, `lanes`, `cards`, `members`): `controllers/` do HTTP only, `services/` are the per-resource seam where server-side concerns (authz, quotas, audit) attach, `models/` hold the resource types + request DTOs. The domain model itself — every rule — is the engine, shared by all transports.
 - **Identity**: the caller's user id rides the `X-User-Id` header verbatim — the server is identity-agnostic like the engine; put your real auth in front and set the header from the authenticated principal.
 - Engine error codes map to HTTP statuses (`*_not_found` → 404, `duplicate_member` → 409, rule violations → 400).
 
