@@ -16,6 +16,9 @@
         </form>
         <button v-else class="appbar-add" @click="openComposer"><Icon name="plus" :size="14" /> Board</button>
       </nav>
+      <span class="appbar-mode" :class="{ 'is-server': mode === 'server' }" :title="mode === 'server' ? 'Connected to the Boardkit server — state persists in its database' : 'No server detected — running in-browser against localStorage'">
+        {{ mode === 'server' ? 'server' : 'local' }}
+      </span>
     </header>
 
     <BoardView v-if="selectedBoard" :board-id="selectedBoard.id" @open-board="selectBoard" />
@@ -29,7 +32,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue';
-import { CURRENT_USER, engine, version } from './store.js';
+import { CURRENT_USER, engine, mode, version } from './store.js';
 import BoardView from './components/BoardView.vue';
 import Icon from './components/Icon.vue';
 

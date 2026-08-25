@@ -104,17 +104,30 @@ Coarse-grained by design: trivial to implement for any backing store (S3 object,
 - **Cross-board card moves** — deliberately excluded from v1 (owner validity and link semantics deserve their own design pass).
 - **Custom field schemas** — vertical-defined typed fields on cards.
 
-## Demo UI
+## REST API server
 
-A Trello-style board UI lives in [`ui/`](ui/) — flat single-color SVG icons, blue board canvas, drag-and-drop cards, and the full card editor (labels, due date, owner, checklist, board links). It runs the engine **entirely in the browser** against a `localStorage` adapter — no server, no build of the core package needed (it imports the engine source directly).
+A self-hostable backend lives in [`server/`](server/) — Express over the engine, **Postgres-backed** with a zero-config JSON-file fallback:
 
 ```bash
-cd ui
+cd server
 npm install
-npm run dev   # → http://localhost:5173
+npm run dev                     # → :4400, state in ./data/boardkit.json
+DATABASE_URL=postgres://… npm run dev   # → state in Postgres (boardkit_state, auto-created)
 ```
 
-The UI is also a reference for embedding: `ui/src/store.ts` shows the whole integration — a custom storage adapter in ~15 lines and a reactivity bridge that subscribes to `engine.on('*')`.
+- Endpoints mirror the engine API: boards, members, lanes, cards, moves, links, checklists — plus `GET /state` (full snapshot) and `GET /events` (every engine event over SSE, so clients stay live).
+- **Identity**: the caller's user id rides the `X-User-Id` header verbatim — the server is identity-agnostic like the engine; put your real auth in front and set the header from the authenticated principal.
+- Engine error codes map to HTTP statuses (`*_not_found` → 404, `duplicate_member` → 409, rule violations → 400).
+
+## Demo UI
+
+A board UI in [`ui/`](ui/), styled in the **Feature1 design language** — dark near-black-indigo glass surfaces, Signal Violet accent, Inter, flat single-color SVG icons — with drag-and-drop cards and the full card editor (labels, due date, owner, checklist, board links).
+
+```bash
+cd ui && npm install && npm run dev   # → http://localhost:5173
+```
+
+The UI auto-detects the backend: with the server running it operates in **server mode** (REST + SSE, state in the server's database); without it, it falls back to running the engine **entirely in the browser** against `localStorage`. The mode chip in the app bar shows which. `ui/src/store.ts` is the reference for both embeddings — the `BoardClient` interface, a snapshot-cache REST client, and a ~15-line localStorage adapter.
 
 ## Development
 

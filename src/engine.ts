@@ -71,6 +71,14 @@ export class Boardkit {
     this.initialized = true;
   }
 
+  /**
+   * Deep copy of the complete state — for backups, exports, and remote
+   * projections (the REST server's GET /state uses this).
+   */
+  snapshot(): BoardkitState {
+    return structuredClone(this.state);
+  }
+
   // ── Events ──────────────────────────────────────────────────────────────
 
   on(type: BoardkitEventType | '*', handler: BoardkitEventHandler): () => void {
