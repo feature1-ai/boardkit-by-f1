@@ -1,0 +1,48 @@
+{
+  "name": "@feature1/boardkit",
+  "version": "0.1.0",
+  "description": "A Trello-like flexible task engine with typed events — the foundation for building vertical process automation products. The vertical-specific value comes from the opinions and domain rules you build on top.",
+  "keywords": [
+    "kanban",
+    "board",
+    "task-engine",
+    "workflow",
+    "automation",
+    "trello",
+    "process"
+  ],
+  "license": "MIT",
+  "author": "Abdul Rahman K",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^26.3.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  }
+}
