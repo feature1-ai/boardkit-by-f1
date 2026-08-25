@@ -1,0 +1,19 @@
+{
+  "name": "@feature1/boardkit-ui",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Trello-style demo UI for the Boardkit engine — flat icons, board canvas, drag-and-drop. Runs the engine fully in the browser against localStorage.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "vite": "^5.4.0"
+  }
+}

@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 import { BoardkitError, err } from './errors.js';
 import { EventBus } from './events.js';
 import { MemoryStore } from './stores/MemoryStore.js';
@@ -31,7 +30,11 @@ export interface BoardkitOptions {
   requireOwnerMembership?: boolean;
   /** Injectable clock — deterministic tests, no hidden Date.now() calls. */
   now?: () => Date;
-  /** Injectable id factory. Defaults to crypto.randomUUID. */
+  /**
+   * Injectable id factory. Defaults to the web-standard
+   * globalThis.crypto.randomUUID (Node ≥ 18 and all modern browsers), which
+   * keeps the engine runnable in the browser.
+   */
   idFactory?: () => ID;
 }
 
@@ -58,7 +61,7 @@ export class Boardkit {
     this.store = options.store ?? new MemoryStore();
     this.requireOwnerMembership = options.requireOwnerMembership ?? true;
     this.now = options.now ?? (() => new Date());
-    this.newId = options.idFactory ?? (() => randomUUID());
+    this.newId = options.idFactory ?? (() => globalThis.crypto.randomUUID());
   }
 
   /** Load persisted state. Safe to call more than once. */

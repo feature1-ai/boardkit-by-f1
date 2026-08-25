@@ -104,6 +104,18 @@ Coarse-grained by design: trivial to implement for any backing store (S3 object,
 - **Cross-board card moves** — deliberately excluded from v1 (owner validity and link semantics deserve their own design pass).
 - **Custom field schemas** — vertical-defined typed fields on cards.
 
+## Demo UI
+
+A Trello-style board UI lives in [`ui/`](ui/) — flat single-color SVG icons, blue board canvas, drag-and-drop cards, and the full card editor (labels, due date, owner, checklist, board links). It runs the engine **entirely in the browser** against a `localStorage` adapter — no server, no build of the core package needed (it imports the engine source directly).
+
+```bash
+cd ui
+npm install
+npm run dev   # → http://localhost:5173
+```
+
+The UI is also a reference for embedding: `ui/src/store.ts` shows the whole integration — a custom storage adapter in ~15 lines and a reactivity bridge that subscribes to `engine.on('*')`.
+
 ## Development
 
 ```bash
