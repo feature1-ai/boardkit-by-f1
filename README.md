@@ -1,8 +1,10 @@
 # Boardkit
 
-**A Trello-like flexible task engine + extensible workflow automation — the foundation for building vertical process automation products.**
+**The open-source task engine for AI-powered workflow products.** Boards, lanes, cards — and a typed event stream your automations, domain rules, and AI agents plug into.
 
-The thesis: a flexible board/lane/card engine with typed events is generic infrastructure. The vertical-specific value — a hiring pipeline, a content calendar, an incident tracker, a deal flow — comes from the *opinions and domain rules you build on top*: fixed stage names, required fields, assignment policies, automations. Boardkit gives you the engine so you only build the opinions.
+Boardkit is **AI-native by architecture**, not by bolt-on: every mutation emits a typed event, the engine is headless and embeddable, and rules attach as subscribers. That's the surface the upcoming automation engine builds on — and the reason agents can be first-class actors on a board rather than a plugin.
+
+Use it as a **self-hostable Trello alternative** (server + UI included), or build your own vertical on the engine. The thesis: a flexible board/lane/card engine with typed events is generic infrastructure — the vertical-specific value of a hiring pipeline, a content calendar, an incident tracker, or a deal flow comes from the *opinions and domain rules you build on top*: fixed stage names, required fields, assignment policies, automations. Boardkit gives you the engine so you only build the opinions.
 
 - **Zero runtime dependencies.** TypeScript, Node ≥ 18.
 - **Identity-agnostic.** User ids are opaque strings owned by your app — bring your own auth and tenancy.
@@ -99,6 +101,7 @@ Coarse-grained by design: trivial to implement for any backing store (S3 object,
 ## Roadmap
 
 - **Automation rules engine** — declarative trigger → condition → action rules (Butler-style) registered on the event stream, with pluggable custom actions. The events layer shipped in v1 is its foundation.
+- **AI workflows** — agents as first-class actors on the board: they observe the event stream and act through the same engine API as humans (create, move, complete, comment), governed by the same domain rules. The automation engine is the substrate this lands on.
 - **REST API server** — a thin self-hostable HTTP layer over the engine.
 - **Row-level SQL storage adapter** (Postgres) for multi-writer deployments.
 - **Cross-board card moves** — deliberately excluded from v1 (owner validity and link semantics deserve their own design pass).

@@ -1,14 +1,17 @@
 {
   "name": "@feature1/boardkit",
   "version": "0.1.0",
-  "description": "A Trello-like flexible task engine with typed events — the foundation for building vertical process automation products. The vertical-specific value comes from the opinions and domain rules you build on top.",
+  "description": "The open-source task engine for AI-powered workflow products — boards, lanes, cards, and a typed event stream your automations and agents plug into. Self-hostable Trello alternative included; the vertical value comes from the opinions you build on top.",
   "keywords": [
     "kanban",
     "board",
     "task-engine",
     "workflow",
     "automation",
+    "ai",
+    "agents",
     "trello",
+    "trello-alternative",
     "process"
   ],
   "license": "MIT",
