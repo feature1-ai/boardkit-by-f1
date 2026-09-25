@@ -127,6 +127,8 @@ DATABASE_URL=postgres://… npm run dev   # → state in Postgres (boardkit_stat
 
 A board UI in [`ui/`](ui/), styled in the **Feature1 design language** — dark near-black-indigo glass surfaces, Signal Violet accent, Inter, flat single-color SVG icons — with drag-and-drop cards and the full card editor (labels, due date, owner, checklist, board links).
 
+![Boardkit demo UI — a hiring pipeline board with Applied, Screen, Interview, Offer and Hired lanes, labeled cards with checklists, owners, due dates and a sub-board link, and the live event stream panel](docs/ui-screenshot.png)
+
 ```bash
 cd ui && npm install && npm run dev   # → http://localhost:5173
 ```
